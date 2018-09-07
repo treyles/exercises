@@ -1,0 +1,51 @@
+<script src="../tinytest.js"></script>
+<script src="filter.js"></script>
+<script>
+  tests({
+    'It should run the callback funtion array.length times.': function () {
+      var counter = 0;
+      filter([1, 2, 3], function () {
+        counter++;
+      });
+      eq(counter, 3)
+    },
+    'It should pass in the ith element as the first argument to the callback.': function () {
+      filter([1], function (number) {
+        eq(number, 1);
+      });
+    },
+    'It should pass in the current element being processed in the array.': function () {
+      filter([1], function (number, index) {
+        eq(index, 0);
+      });
+    },
+    'It should pass in originalArray as the third argument to the callback.': function () {
+      var testArray = [1, 2, 3];
+      filter(testArray, function (number, index, originalArray) {
+        eq(testArray, originalArray);
+      });
+    },
+    'It should accept a configurable this object.': function () {
+      filter([1, 2, 3], function (number, index, originalArray) {
+        eq(this.name, 'Troy');
+      }, { name: 'Troy' });
+    },
+    'It should return an array.': function () {
+      var filteredArray = filter([], function (element) { });
+      eq(Array.isArray(filteredArray), true);
+    },
+    'It should return a new array, not the array being filtered.': function () {
+      var arrayBeingFiltered = [];
+      var filteredArray = filter(arrayBeingFiltered, function (element) { });
+      // filteredArray is not equal to testArray.
+      eq(filteredArray !== arrayBeingFiltered, true);
+    },
+    'It should return a new array that only has elements where callback() is true.': function () {
+      var filteredArray = filter([1, 2], function (number) {
+        return number > 1;
+      });
+      eq(filteredArray.length, 1);
+      eq(filteredArray[0], 2);
+    }
+  });
+</script>

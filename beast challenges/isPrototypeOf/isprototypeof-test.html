@@ -1,0 +1,41 @@
+<script src="../tinytest.js"></script>
+<script src="isPrototypeOf.js"></script>
+<script>
+  var canine = {
+    bark: function () {
+      console.log('bark');
+    }
+  };
+
+  var dog = Object.create(canine);
+  dog.fetch = function () {
+    console.log('fetch');
+  };
+
+  var myDog = Object.create(dog);
+  var empty = Object.create(null);
+
+
+  tests({
+    'It should return true if canine is prototype of dog': function () {
+      var prototypeResult = isPrototypeOf(canine, dog);
+      eq(prototypeResult, true);
+    },
+    'It should return true if dog is prototype of myDog': function () {
+      var prototypeResult = isPrototypeOf(dog, myDog);
+      eq(prototypeResult, true);
+    },
+    'It should return false if dog is prototype of empty': function () {
+      var prototypeResult = isPrototypeOf(dog, empty);
+      eq(prototypeResult, false);
+    },
+    'It should return true if canine is prototype of myDog': function () {
+      var prototypeResult = isPrototypeOf(canine, myDog);
+      eq(prototypeResult, true);
+    },
+    'It should return true if Object.prototype is prototype of myDog': function () {
+      var prototypeResult = isPrototypeOf(Object.prototype, myDog);
+      eq(prototypeResult, true);
+    }
+  });
+</script>

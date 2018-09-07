@@ -1,0 +1,51 @@
+<script src="../tinytest.js"></script>
+<script src="map.js"></script>
+<script>
+  tests({
+    'It should run the callback funtion array.length times.': function () {
+      var counter = 0;
+      map([1, 2, 3], function () {
+        counter++;
+      });
+      eq(counter, 3)
+    },
+    'It should pass in the ith element as the first argument to the callback.': function () {
+      map([1], function (number) {
+        eq(number, 1);
+      });
+    },
+    'It should pass in the current element being processed in the array.': function () {
+      map([1], function (number, index) {
+        eq(index, 0);
+      });
+    },
+    'It should pass in originalArray as the third argument to the callback.': function () {
+      var testArray = [1, 2, 3];
+      map(testArray, function (number, index, originalArray) {
+        eq(testArray, originalArray);
+      });
+    },
+    'It should accept an optional this object.': function () {
+      map([1, 2, 3], function (number, index, originalArray) {
+        eq(this.name, 'Troy');
+      }, { name: 'Troy' });
+    },
+    'It should return an array.': function () {
+      var filteredArray = map([], function (element) { });
+      eq(Array.isArray(filteredArray), true);
+    },
+    'It should return a new array, not the original array.': function () {
+      var originalArray = [];
+      var mappedArray = map(originalArray, function (element) { });
+      // filteredArray is not equal to testArray.
+      eq(mappedArray !== originalArray, true);
+    },
+    'It should return a mapped array.': function () {
+      var originalArray = [1];
+      var mappedArray = map(originalArray, function (element) {
+        return element * 4;
+      });
+      eq(mappedArray[0], 4);
+    }
+  });
+</script>

@@ -1,0 +1,72 @@
+<script src="../tinytest.js"></script>
+<script src="libOutOfOrder.js"></script>
+<script>
+  tests({
+    'It should be able to LOAD libraries': function () {
+      librarySystem('name', [], function () {
+        return 'Troy';
+      });
+      librarySystem('company', [], function () {
+        return 'Watch and Code';
+      });
+
+      var returnName = librarySystem('name');
+      eq(returnName, 'Troy')
+      var returnCompany = librarySystem('company');
+      eq(returnCompany, 'Watch and Code')
+    },
+    'It should be able to RETURN libraries': function () {
+      librarySystem('name');
+      var returnName = librarySystem('name');
+      eq(returnName, 'Troy');
+    },
+    'It should accept an optional dependency array to librarySystem': function () {
+      librarySystem('workBlurb', ['name', 'company'], function (name, company) {
+        return name + ' works at ' + company;
+      });
+
+      var returnWorkBlurb = librarySystem('workBlurb');
+      eq(returnWorkBlurb, 'Troy works at Watch and Code');
+    },
+    'It should accept a third library in dependencyArray': function () {
+      librarySystem('testLibrary', [], function () {
+        return ', but not really!';
+      });
+
+      librarySystem('finishWorkBlurb', ['name', 'company', 'testLibrary'], function (a, b, c) {
+        return a + ' works at ' + b + c;
+      });
+
+      var returnfinishedWorkBlurb = librarySystem('finishWorkBlurb');
+      eq(returnfinishedWorkBlurb, 'Troy works at Watch and Code, but not really!');
+    },
+    'It should run library only once': function () {
+      var numberOfTimesTestHasRun = 0;
+
+      librarySystem('test', [], function () {
+        numberOfTimesTestHasRun++;
+      });
+
+      librarySystem('test');
+      librarySystem('test');
+
+      eq(numberOfTimesTestHasRun, 1);
+    },
+    'It should load libraries out of order': function () {
+      librarySystem('workBlurb2', ['thisTest', 'outOfOrder'], function (thisTest, outOfOrder) {
+        return thisTest + ' is ' + outOfOrder;
+      });
+
+      librarySystem('thisTest', [], function () {
+        return 'This test';
+      });
+
+      librarySystem('outOfOrder', [], function () {
+        return 'out of order!';
+      });
+
+      var resultOfWorkBlurb2 = librarySystem('workBlurb2');
+      eq(resultOfWorkBlurb2, 'This test is out of order!')
+    }
+  });
+</script>
